@@ -1,0 +1,1512 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CareerVerse — Engineering & Build Platform</title>
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="alternate icon" href="favicon.ico">
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Canvas Confetti CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+  <!-- Pyodide WebAssembly Python Runtime CDN -->
+  <script src="https://cdn.jsdelivr.net/pyodide/v0.26.2/full/pyodide.js"></script>
+  <!-- Custom Styling -->
+  <link rel="stylesheet" href="css/custom.css?v=3.7">
+</head>
+<body class="bg-[#05060b] text-[#ffffff] min-h-screen flex flex-col antialiased selection:bg-indigo-500 selection:text-white">
+
+  <!-- Apple-Style Floating Frosted Glass Navbar -->
+  <header class="sticky top-4 z-50 px-4 sm:px-8 max-w-7xl mx-auto w-full transition-all">
+    <div class="card-surface px-4 sm:px-6 py-3 flex items-center justify-between gap-4 border border-white/[0.1] shadow-2xl rounded-full bg-[#0a0d18]/80 backdrop-blur-2xl">
+      
+      <!-- Minimalist Apple-Grade Brand Mark -->
+      <div class="flex items-center gap-3 pl-1">
+        <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-600 flex items-center justify-center text-white shadow-md shadow-indigo-500/25">
+          <i class="fa-solid fa-code text-xs"></i>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="font-bold text-sm tracking-tight text-white">CareerVerse</span>
+          <span class="hidden sm:inline-block text-[10px] font-mono text-zinc-400 bg-white/[0.06] border border-white/[0.1] rounded-full px-2 py-0.5">Studio</span>
+        </div>
+      </div>
+
+      <!-- Segmented Navigation Controller (Apple macOS/iOS Pill Style) -->
+      <nav class="hidden lg:flex items-center gap-1 bg-white/[0.04] p-1 rounded-full border border-white/[0.06]">
+        <button class="nav-tab nav-btn active" data-tab="dashboard">
+          <i class="fa-solid fa-compass text-xs"></i>
+          <span>Overview</span>
+        </button>
+        <button class="nav-tab nav-btn" data-tab="study-notes">
+          <i class="fa-solid fa-book-open text-xs"></i>
+          <span>Study Notes</span>
+        </button>
+        <button class="nav-tab nav-btn" data-tab="video-classroom">
+          <i class="fa-solid fa-circle-play text-xs"></i>
+          <span>Classroom</span>
+        </button>
+        <button class="nav-tab nav-btn" data-tab="roadmaps">
+          <i class="fa-solid fa-layer-group text-xs"></i>
+          <span>Roadmaps</span>
+        </button>
+        <button class="nav-tab nav-btn" data-tab="workspace">
+          <i class="fa-solid fa-laptop-code text-xs"></i>
+          <span>Studio IDE</span>
+        </button>
+        <button class="nav-tab nav-btn" data-tab="generator">
+          <i class="fa-solid fa-sliders text-xs"></i>
+          <span>Spec Studio</span>
+        </button>
+        <button class="nav-tab nav-btn" data-tab="industry">
+          <i class="fa-solid fa-shield-halved text-xs"></i>
+          <span>Incident Lab</span>
+        </button>
+      </nav>
+
+      <!-- Engine Status & Primary Action Pills -->
+      <div class="flex items-center gap-2 pr-1">
+        <!-- Live Pyodide WASM Engine Badge -->
+        <div id="pyodide-status-indicator" class="hidden sm:flex items-center text-xs px-3 py-1 bg-white/[0.05] border border-white/[0.08] rounded-full">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 mr-2"></span>
+          <span class="text-zinc-300 font-mono text-[11px]">WASM 3.11</span>
+        </div>
+
+        <!-- Ask What To Do Button (Beginner Friendly) -->
+        <button id="btn-open-beginner-chat" class="btn-secondary text-xs flex items-center gap-1.5 py-1.5 px-3.5">
+          <i class="fa-regular fa-comment-dots text-indigo-400"></i>
+          <span class="hidden sm:inline">Ask What To Do</span>
+          <span class="sm:hidden">Ask AI</span>
+        </button>
+
+        <button class="nav-tab btn-primary text-xs py-1.5 px-4" data-tab="workspace">
+          <i class="fa-solid fa-play text-[10px]"></i>
+          <span>Open Studio</span>
+        </button>
+      </div>
+
+    </div>
+    
+    <!-- Mobile Segmented Navigation Scroll Strip -->
+    <div class="lg:hidden flex items-center gap-1.5 py-2 overflow-x-auto mt-2 px-2">
+      <button class="nav-tab nav-btn active text-xs py-1 px-3" data-tab="dashboard">Overview</button>
+      <button class="nav-tab nav-btn text-xs py-1 px-3" data-tab="study-notes">Notes</button>
+      <button class="nav-tab nav-btn text-xs py-1 px-3" data-tab="video-classroom">Videos</button>
+      <button class="nav-tab nav-btn text-xs py-1 px-3" data-tab="roadmaps">Roadmaps</button>
+      <button class="nav-tab nav-btn text-xs py-1 px-3" data-tab="workspace">Studio</button>
+      <button class="nav-tab nav-btn text-xs py-1 px-3" data-tab="generator">Generator</button>
+      <button class="nav-tab nav-btn text-xs py-1 px-3" data-tab="industry">Incidents</button>
+    </div>
+  </header>
+
+  <!-- Main Application Body with Expansive Whitespace -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-8 py-8 lg:py-16 space-y-16">
+
+    <!-- ======================================================== -->
+    <!-- VIEW 1: ENGINEERING JOURNEY (Apple-Style Keynote Hero) -->
+    <!-- ======================================================== -->
+    <section id="tab-dashboard" class="tab-panel space-y-16 lg:space-y-20">
+      
+      <!-- Apple Keynote Hero Header -->
+      <div class="text-center max-w-4xl mx-auto space-y-6 pt-4 sm:pt-8">
+        <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/[0.06] border border-white/[0.12] backdrop-blur-md shadow-sm">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+          <span class="text-xs font-medium text-zinc-300">Standardized Engineering Education</span>
+          <span class="text-zinc-600">•</span>
+          <span class="text-xs font-mono text-indigo-300">Pillars 1 & 31</span>
+        </div>
+
+        <h1 class="apple-hero-headline text-white tracking-tight">
+          Build. <br class="hidden sm:inline" />
+          <span class="text-gradient-accent">Don't just learn.</span>
+        </h1>
+
+        <p class="text-base sm:text-xl text-zinc-300 font-normal leading-relaxed max-w-2xl mx-auto">
+          A software engineer is evaluated on working systems, not memorized lectures.
+          Every concept transitions immediately into verified code.
+        </p>
+
+        <!-- Apple Call to Action Pills -->
+        <div class="flex flex-wrap items-center justify-center gap-4 pt-2">
+          <button class="nav-tab btn-primary text-sm py-3 px-7 shadow-lg shadow-white/10" data-tab="workspace">
+            <i class="fa-solid fa-play text-xs mr-1"></i>
+            <span>Launch WebAssembly Studio →</span>
+          </button>
+          <button class="nav-tab btn-secondary text-sm py-3 px-6" data-tab="study-notes">
+            <i class="fa-solid fa-book-open text-xs mr-1"></i>
+            <span>Explore Plain-English Notes</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- ==================================================== -->
+      <!-- ✨ NEW: STUDENT CENTER & ZERO-CS LAUNCHPAD BENTO CARD -->
+      <!-- ==================================================== -->
+      <div class="card-surface p-8 sm:p-10 border border-white/[0.1] rounded-3xl relative overflow-hidden bg-gradient-to-br from-[#0e1222] via-[#090c16] to-[#05060b] shadow-2xl max-w-6xl mx-auto">
+        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-8 pb-8 border-b border-white/[0.08]">
+          <div class="space-y-3 max-w-2xl">
+            <div class="flex items-center gap-2">
+              <span class="badge-brand font-mono text-[11px]">🌱 Built for Everyone</span>
+              <span class="text-xs text-zinc-400 font-mono">Zero Coding Prerequisite</span>
+            </div>
+            <h2 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+              New to coding? <br class="hidden sm:inline" />
+              <span class="text-gradient-accent">Here is your exact 4-step path.</span>
+            </h2>
+            <p class="text-sm text-zinc-300 leading-relaxed">
+              Whether you study Arts, Commerce, Healthcare, or are opening a code editor for the first time — you don't need math or computer science background. Follow these steps in 15 minutes.
+            </p>
+          </div>
+
+          <!-- Daily Streak & XP Tracker Bento Box -->
+          <div class="p-6 bg-white/[0.03] rounded-2xl border border-white/[0.08] min-w-[280px] space-y-4">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <span class="text-xl">🔥</span>
+                <div>
+                  <span class="text-xs font-bold text-white block">3-Day Builder Streak</span>
+                  <span class="text-[10px] text-emerald-400 font-mono">Active Today</span>
+                </div>
+              </div>
+              <span class="badge-neutral font-mono text-xs">Level 2</span>
+            </div>
+
+            <div>
+              <div class="flex justify-between text-xs text-zinc-300 mb-1.5 font-mono">
+                <span>Builder XP:</span>
+                <span id="streak-xp-counter" class="text-indigo-300 font-bold">450 / 600 XP</span>
+              </div>
+              <div class="w-full progress-bar-bg h-2">
+                <div id="streak-xp-fill" class="progress-bar-fill h-full" style="width: 75%"></div>
+              </div>
+            </div>
+
+            <button id="btn-claim-daily-xp" class="btn-primary w-full justify-center py-2 text-xs">
+              <i class="fa-solid fa-sparkles text-amber-500 mr-1.5"></i>
+              <span>Claim Today's +25 XP</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- 4 Step Action Launch Tiles -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 pt-8">
+          
+          <div class="p-5 rounded-2xl bg-white/[0.02] border border-white/[0.06] hover:border-white/[0.18] transition-all space-y-3 group cursor-pointer quick-step-card" data-step="jargon">
+            <div class="w-10 h-10 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400 group-hover:scale-110 transition-transform">
+              <i class="fa-solid fa-lightbulb text-sm"></i>
+            </div>
+            <div>
+              <span class="text-[10px] font-mono text-indigo-400 font-bold uppercase tracking-wider block mb-0.5">Step 01 • Jargon Buster</span>
+              <h4 class="text-sm font-bold text-white group-hover:text-indigo-300 transition-colors">Demystify Tech Words</h4>
+              <p class="text-xs text-zinc-400 mt-1 leading-relaxed">Translate scary terms into kitchen & restaurant analogies.</p>
+            </div>
+            <span class="text-xs text-indigo-300 font-medium inline-flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+              Open Dictionary →
+            </span>
+          </div>
+
+          <div class="p-5 rounded-2xl bg-white/[0.02] border border-white/[0.06] hover:border-white/[0.18] transition-all space-y-3 group cursor-pointer quick-step-card" data-step="notes">
+            <div class="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400 group-hover:scale-110 transition-transform">
+              <i class="fa-solid fa-book-open text-sm"></i>
+            </div>
+            <div>
+              <span class="text-[10px] font-mono text-cyan-400 font-bold uppercase tracking-wider block mb-0.5">Step 02 • Study Note</span>
+              <h4 class="text-sm font-bold text-white group-hover:text-cyan-300 transition-colors">Read or Listen Aloud</h4>
+              <p class="text-xs text-zinc-400 mt-1 leading-relaxed">2-minute plain-English note on variables and blenders.</p>
+            </div>
+            <span class="text-xs text-cyan-300 font-medium inline-flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+              Read Notes →
+            </span>
+          </div>
+
+          <div class="p-5 rounded-2xl bg-white/[0.02] border border-white/[0.06] hover:border-white/[0.18] transition-all space-y-3 group cursor-pointer quick-step-card" data-step="flashcards">
+            <div class="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-400 group-hover:scale-110 transition-transform">
+              <i class="fa-solid fa-clone text-sm"></i>
+            </div>
+            <div>
+              <span class="text-[10px] font-mono text-purple-400 font-bold uppercase tracking-wider block mb-0.5">Step 03 • Flashcards</span>
+              <h4 class="text-sm font-bold text-white group-hover:text-purple-300 transition-colors">Active Recall Deck</h4>
+              <p class="text-xs text-zinc-400 mt-1 leading-relaxed">Flip 3D cards to test yourself and earn +10 XP per card.</p>
+            </div>
+            <span class="text-xs text-purple-300 font-medium inline-flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+              Flip Cards →
+            </span>
+          </div>
+
+          <div class="p-5 rounded-2xl bg-white/[0.02] border border-white/[0.06] hover:border-white/[0.18] transition-all space-y-3 group cursor-pointer quick-step-card" data-step="studio">
+            <div class="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 group-hover:scale-110 transition-transform">
+              <i class="fa-solid fa-play text-sm"></i>
+            </div>
+            <div>
+              <span class="text-[10px] font-mono text-emerald-400 font-bold uppercase tracking-wider block mb-0.5">Step 04 • 1-Click Code</span>
+              <h4 class="text-sm font-bold text-white group-hover:text-emerald-300 transition-colors">Run in WebAssembly</h4>
+              <p class="text-xs text-zinc-400 mt-1 leading-relaxed">Run a working program in your browser with zero installs.</p>
+            </div>
+            <span class="text-xs text-emerald-300 font-medium inline-flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+              Run Code Now →
+            </span>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- The 3 Golden Pillars: Large Bento Cards -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto">
+        <div class="card-surface p-8 space-y-4 hover:border-white/20 transition-all">
+          <div class="w-12 h-12 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400 text-lg">
+            <i class="fa-solid fa-cube"></i>
+          </div>
+          <span class="text-[11px] font-mono font-semibold text-zinc-400 uppercase tracking-wider block">Phase 01 • Concept</span>
+          <h3 class="text-lg font-bold text-white tracking-tight">What did I learn?</h3>
+          <p class="text-sm text-zinc-400 leading-relaxed">
+            Foundational data structures, algorithmic invariants, or API contracts explained with everyday analogies.
+          </p>
+        </div>
+
+        <div class="card-surface p-8 space-y-4 hover:border-white/20 transition-all">
+          <div class="w-12 h-12 rounded-2xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400 text-lg">
+            <i class="fa-solid fa-terminal"></i>
+          </div>
+          <span class="text-[11px] font-mono font-semibold text-zinc-400 uppercase tracking-wider block">Phase 02 • Artifact</span>
+          <h3 class="text-lg font-bold text-white tracking-tight">What can I build with it?</h3>
+          <p class="text-sm text-zinc-400 leading-relaxed">
+            A working microservice, real-time automation tool, or user-facing product running in your browser with zero installation.
+          </p>
+        </div>
+
+        <div class="card-surface p-8 space-y-4 hover:border-white/20 transition-all">
+          <div class="w-12 h-12 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 text-lg">
+            <i class="fa-solid fa-award"></i>
+          </div>
+          <span class="text-[11px] font-mono font-semibold text-zinc-400 uppercase tracking-wider block">Phase 03 • Proof</span>
+          <h3 class="text-lg font-bold text-white tracking-tight">How does it prove ability?</h3>
+          <p class="text-sm text-zinc-400 leading-relaxed">
+            Produces verifiable GitHub commits, passing test suites, and recruiter-ready case studies instead of generic certificates.
+          </p>
+        </div>
+      </div>
+
+      <!-- Large Bento Grid: Student Builder Score & Progression Track -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 max-w-6xl mx-auto items-stretch">
+        
+        <!-- Large Profile & Stats Card -->
+        <div class="lg:col-span-4 card-surface p-8 flex flex-col justify-between space-y-6">
+          <div class="space-y-4">
+            <div class="flex items-center gap-4">
+              <div class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-zinc-800 to-zinc-700 border border-white/[0.12] flex items-center justify-center font-bold text-lg text-white shadow-lg">
+                AR
+              </div>
+              <div>
+                <h3 class="text-base font-bold text-white">Alex Rivera</h3>
+                <span class="text-xs font-mono text-zinc-400">@alex_builds • Verified Builder</span>
+              </div>
+            </div>
+
+            <!-- Big Typography Stats -->
+            <div id="builder-stats-breakdown" class="pt-2"></div>
+          </div>
+
+          <div class="pt-6 border-t border-white/[0.08] space-y-3">
+            <span class="text-xs font-bold text-zinc-400 uppercase tracking-wider block">Demonstrated Competencies</span>
+            <div id="user-skills-list" class="space-y-2"></div>
+          </div>
+        </div>
+
+        <!-- Large Progression Roadmap Bento Card -->
+        <div class="lg:col-span-8 card-surface p-8 flex flex-col justify-between space-y-6">
+          <div class="space-y-4">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-white/[0.08] pb-4">
+              <div>
+                <span class="badge-brand text-[10px] mb-1">Pillar 30</span>
+                <h3 class="text-xl font-bold text-white tracking-tight">End-to-End Engineering Trajectory</h3>
+              </div>
+              <span class="badge-neutral font-mono text-xs">16 Continuous Sprints</span>
+            </div>
+
+            <p class="text-xs sm:text-sm text-zinc-300 leading-relaxed">
+              Every milestone is structured to transform beginners into production engineers who can architect, debug, test, and ship.
+            </p>
+
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2.5 text-xs pt-2">
+              <div class="p-3 bg-white/[0.02] rounded-xl border border-white/[0.06] hover:border-white/[0.15] transition-all">
+                <span class="text-[10px] text-zinc-500 font-mono block">STAGE 01</span>
+                <span class="font-medium text-zinc-300">Self Discovery</span>
+              </div>
+              <div class="p-3 bg-white/[0.02] rounded-xl border border-white/[0.06] hover:border-white/[0.15] transition-all">
+                <span class="text-[10px] text-zinc-500 font-mono block">STAGE 02</span>
+                <span class="font-medium text-zinc-300">Career Taxonomy</span>
+              </div>
+              <div class="p-3 bg-white/[0.02] rounded-xl border border-white/[0.06] hover:border-white/[0.15] transition-all">
+                <span class="text-[10px] text-zinc-500 font-mono block">STAGE 03</span>
+                <span class="font-medium text-zinc-300">Track Selection</span>
+              </div>
+              <div class="p-3 bg-white/[0.02] rounded-xl border border-white/[0.06] hover:border-white/[0.15] transition-all">
+                <span class="text-[10px] text-zinc-500 font-mono block">STAGE 04</span>
+                <span class="font-medium text-zinc-300">Personal Roadmap</span>
+              </div>
+              <div class="p-3 bg-white/[0.02] rounded-xl border border-white/[0.06] hover:border-white/[0.15] transition-all">
+                <span class="text-[10px] text-zinc-500 font-mono block">STAGE 05</span>
+                <span class="font-medium text-zinc-300">Foundations</span>
+              </div>
+              <div class="p-3 bg-white/[0.02] rounded-xl border border-white/[0.06] hover:border-white/[0.15] transition-all">
+                <span class="text-[10px] text-zinc-500 font-mono block">STAGE 06</span>
+                <span class="font-medium text-zinc-300">Micro-Builds</span>
+              </div>
+              <div class="p-3 bg-indigo-950/40 rounded-xl border border-indigo-500/40 shadow-sm">
+                <span class="text-[10px] text-indigo-300 font-mono block font-semibold">STAGE 07</span>
+                <span class="font-bold text-white">Full Stack App</span>
+              </div>
+              <div class="p-3 bg-indigo-950/40 rounded-xl border border-indigo-500/40 shadow-sm">
+                <span class="text-[10px] text-indigo-300 font-mono block font-semibold">STAGE 08</span>
+                <span class="font-bold text-white">CI/CD & Cloud</span>
+              </div>
+              <div class="p-3 bg-white/[0.02] rounded-xl border border-white/[0.06]">
+                <span class="text-[10px] text-zinc-500 font-mono block">STAGE 09</span>
+                <span class="font-medium text-zinc-300">Code Reviews</span>
+              </div>
+              <div class="p-3 bg-white/[0.02] rounded-xl border border-white/[0.06]">
+                <span class="text-[10px] text-zinc-500 font-mono block">STAGE 10</span>
+                <span class="font-medium text-zinc-300">Portfolio Proof</span>
+              </div>
+              <div class="p-3 bg-white/[0.02] rounded-xl border border-white/[0.06]">
+                <span class="text-[10px] text-zinc-500 font-mono block">STAGE 11</span>
+                <span class="font-medium text-zinc-300">Incidents & P0</span>
+              </div>
+              <div class="p-3 bg-emerald-950/40 rounded-xl border border-emerald-500/40">
+                <span class="text-[10px] text-emerald-300 font-mono block font-semibold">STAGE 12</span>
+                <span class="font-bold text-emerald-200">Job Placement</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Build-Learn Feedback Loop Pill -->
+          <div class="p-4 rounded-2xl bg-white/[0.03] border border-white/[0.08] flex items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+              <span class="w-8 h-8 rounded-full bg-indigo-500/10 text-indigo-400 flex items-center justify-center text-xs">
+                <i class="fa-solid fa-arrows-rotate"></i>
+              </span>
+              <div class="text-xs text-zinc-300">
+                <strong class="text-white">Pillar 29: Bidirectional Engineering Loop</strong> — 
+                Hitting an unfamiliar architectural barrier triggers a targeted micro-lesson before resuming development.
+              </div>
+            </div>
+            <button class="nav-tab btn-secondary text-xs shrink-0" data-tab="generator">
+              Inspect Spec →
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- "Build This" Section: Spacious Bento Cards -->
+      <div class="max-w-6xl mx-auto space-y-6">
+        <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+          <div>
+            <span class="badge-brand mb-2">Pillars 4 & 5</span>
+            <h2 class="text-2xl sm:text-3xl font-bold text-white tracking-tight">"Build This" Micro-Projects</h2>
+            <p class="text-sm text-zinc-400 mt-1">Every curriculum topic pairs directly with a 45–90 minute practical build.</p>
+          </div>
+        </div>
+        <div id="build-this-cards" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
+      </div>
+
+    </section>
+
+    <!-- ======================================================== -->
+    <!-- VIEW: STUDY NOTES & CONCEPT PLAYBOOK (For Everyone) -->
+    <!-- ======================================================== -->
+    <section id="tab-study-notes" class="tab-panel hidden space-y-8 max-w-6xl mx-auto">
+      
+      <!-- Apple-Style Editorial Header -->
+      <div class="card-surface p-8 sm:p-12 border border-white/[0.08] relative overflow-hidden">
+        <div class="flex flex-col md:flex-row md:items-end justify-between gap-6">
+          <div class="space-y-3 max-w-2xl">
+            <div class="flex items-center gap-2">
+              <span class="badge-brand font-mono text-[11px]">Plain-English Knowledge Hub</span>
+              <span class="text-xs text-zinc-400 font-mono">Zero Prerequisite</span>
+            </div>
+            <h2 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight">
+              Software concepts. <br class="hidden sm:inline" />
+              <span class="text-gradient-accent">Explained for everyone.</span>
+            </h2>
+            <p class="text-sm sm:text-base text-zinc-300 leading-relaxed pt-1">
+              Designed specifically for students from non-computer-science backgrounds. Master variables, functions, APIs, databases, and AI through everyday analogies (smoothie blenders, restaurant waitresses, and kitchen jars).
+            </p>
+          </div>
+          <div class="flex flex-wrap items-center gap-2.5 shrink-0">
+            <button id="note-quick-open-guide" class="btn-secondary text-xs py-2 px-5">
+              <i class="fa-regular fa-comment-dots text-indigo-400 mr-2"></i>
+              <span>Ask AI Companion</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Segmented Sub-Tab Switcher for Learning Features -->
+      <div class="flex items-center gap-1.5 p-1.5 bg-white/[0.03] border border-white/[0.08] rounded-full overflow-x-auto">
+        <button class="study-sub-tab active" data-subtab="notes-reader">
+          <i class="fa-solid fa-book-open text-xs"></i>
+          <span>Concept Notes</span>
+        </button>
+        <button class="study-sub-tab" data-subtab="flashcards">
+          <i class="fa-solid fa-clone text-xs"></i>
+          <span>Flashcards (+10 XP)</span>
+        </button>
+        <button class="study-sub-tab" data-subtab="jargon">
+          <i class="fa-solid fa-spell-check text-xs"></i>
+          <span>Jargon Buster</span>
+        </button>
+        <button class="study-sub-tab" data-subtab="notebook">
+          <i class="fa-solid fa-pen-nib text-xs"></i>
+          <span>My Personal Notebook</span>
+        </button>
+        <button class="study-sub-tab" data-subtab="cheatsheets">
+          <i class="fa-solid fa-file-code text-xs"></i>
+          <span>Cheatsheet Vault</span>
+        </button>
+        <button class="study-sub-tab" data-subtab="quiz">
+          <i class="fa-solid fa-circle-question text-xs"></i>
+          <span>Knowledge Quiz</span>
+        </button>
+      </div>
+
+      <!-- SUB-PANEL 1: TWO-PANE CONCEPT NOTES READER -->
+      <div id="studypanel-notes-reader" class="study-panel grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        
+        <!-- Left Sidebar: Note Directory & Search -->
+        <div class="lg:col-span-4 space-y-4">
+          <div class="card-surface p-3.5 border border-white/[0.08]">
+            <div class="relative">
+              <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3 text-zinc-500 text-xs"></i>
+              <input id="notes-search-input" type="text" placeholder="Search concept or analogy..." class="w-full input-field pl-9 text-xs py-2" />
+            </div>
+          </div>
+
+          <div id="notes-list-container" class="space-y-3">
+            <!-- Dynamically populated with study notes -->
+          </div>
+        </div>
+
+        <!-- Right Content: Active Note Reader (Clean Editorial) -->
+        <div class="lg:col-span-8">
+          <div id="active-note-reader" class="card-surface p-8 sm:p-12 border border-white/[0.08] space-y-8">
+            <!-- Dynamically rendered active note content -->
+          </div>
+        </div>
+
+      </div>
+
+      <!-- SUB-PANEL 2: 3D INTERACTIVE FLASHCARDS (Active Recall) -->
+      <div id="studypanel-flashcards" class="study-panel hidden space-y-8">
+        <div class="card-surface p-8 sm:p-10 border border-white/[0.08] text-center max-w-2xl mx-auto space-y-6">
+          <div class="flex items-center justify-between">
+            <span id="flashcard-category-badge" class="badge-brand font-mono text-[10px]">Foundations</span>
+            <span id="flashcard-counter" class="text-xs font-mono text-zinc-400">Card 1 of 6</span>
+          </div>
+
+          <!-- 3D Flip Card Container -->
+          <div class="flashcard-perspective h-72 sm:h-80 w-full cursor-pointer" id="flashcard-flipper">
+            <div id="flashcard-inner" class="flashcard-inner shadow-2xl">
+              <!-- Front Side -->
+              <div class="flashcard-front card-surface p-8 sm:p-10 flex flex-col justify-between border border-white/[0.12] bg-[#0c0f1e]">
+                <div class="flex items-center justify-between text-zinc-400 text-xs font-mono">
+                  <span><i class="fa-regular fa-lightbulb text-amber-300 mr-1.5"></i>Question</span>
+                  <span class="text-[11px] text-indigo-400">Click anywhere to flip ↻</span>
+                </div>
+                <div class="my-auto">
+                  <h3 id="flashcard-question-text" class="text-xl sm:text-2xl font-extrabold text-white tracking-tight leading-snug">
+                    What is a Variable in computer programming?
+                  </h3>
+                </div>
+                <div class="text-xs text-zinc-400 font-mono">
+                  Tap to reveal everyday analogy & answer
+                </div>
+              </div>
+
+              <!-- Back Side -->
+              <div class="flashcard-back card-surface p-8 sm:p-10 flex flex-col justify-between border border-indigo-500/30 bg-[#0e1329]">
+                <div class="flex items-center justify-between text-indigo-300 text-xs font-mono">
+                  <span id="flashcard-analogy-title">Kitchen Jar Analogy</span>
+                  <span class="text-[11px] text-zinc-400">Answer Revealed</span>
+                </div>
+                <div class="my-auto space-y-3">
+                  <p id="flashcard-answer-text" class="text-sm sm:text-base text-zinc-200 leading-relaxed">
+                    A labeled container in computer memory that holds data. You give it a name and a value, and swap what is inside anytime!
+                  </p>
+                  <pre id="flashcard-code-hint" class="p-2.5 rounded-xl bg-black/60 text-xs font-mono text-emerald-300 border border-white/[0.06]">user_score = 100</pre>
+                </div>
+                <div class="text-[11px] text-emerald-400 font-mono">
+                  +10 XP when mastered
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Controls Bar -->
+          <div class="flex items-center justify-center gap-4 pt-2">
+            <button id="btn-prev-flashcard" class="btn-secondary text-xs py-2 px-5">
+              ← Previous
+            </button>
+            <button id="btn-master-flashcard" class="btn-primary text-xs py-2 px-6">
+              <i class="fa-solid fa-check text-emerald-500 mr-1.5"></i>
+              <span>I Know This (+10 XP)</span>
+            </button>
+            <button id="btn-next-flashcard" class="btn-secondary text-xs py-2 px-5">
+              Next →
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- SUB-PANEL 3: JARGON BUSTER (Plain-English Dictionary) -->
+      <div id="studypanel-jargon" class="study-panel hidden space-y-6">
+        <div class="card-surface p-6 border border-white/[0.08] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <h3 class="text-lg font-bold text-white">Zero-CS Jargon Buster</h3>
+            <p class="text-xs text-zinc-400 mt-0.5">Every intimidating tech buzzword translated into plain, human language.</p>
+          </div>
+          <div class="w-full sm:w-72 relative">
+            <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3 text-zinc-500 text-xs"></i>
+            <input id="jargon-search-input" type="text" placeholder="Search jargon (e.g. API, Loop, Git)..." class="w-full input-field pl-9 text-xs py-2" />
+          </div>
+        </div>
+        <div id="jargon-cards-container" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
+      </div>
+
+      <!-- SUB-PANEL 4: MY PERSONAL STUDENT NOTEBOOK -->
+      <div id="studypanel-notebook" class="study-panel hidden space-y-8">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          
+          <div class="lg:col-span-7 card-surface p-8 sm:p-10 border border-white/[0.08] space-y-5">
+            <div class="flex items-center justify-between border-b border-white/[0.08] pb-4">
+              <div>
+                <h3 class="text-lg font-bold text-white">My Personal Scratchpad</h3>
+                <p class="text-xs text-zinc-400 mt-0.5">Write your personal takeaways, code snippets, or interview questions.</p>
+              </div>
+              <button id="btn-export-notebook" class="btn-secondary text-xs py-1.5 px-4">
+                <i class="fa-solid fa-download mr-1.5"></i>Export .txt
+              </button>
+            </div>
+
+            <div class="space-y-4">
+              <div>
+                <label class="block text-xs font-bold text-zinc-400 uppercase tracking-wider mb-1.5">Note Title</label>
+                <input id="notebook-title-input" type="text" placeholder="e.g. How I built my first grade calculator" class="w-full input-field text-xs py-2" />
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-zinc-400 uppercase tracking-wider mb-1.5">Your Notes & Thoughts</label>
+                <textarea id="notebook-content-input" placeholder="Type anything in plain English or paste code here..." class="w-full input-field text-xs h-60 resize-none font-mono leading-relaxed"></textarea>
+              </div>
+              <button id="btn-save-notebook" class="btn-primary text-xs py-2.5 px-6">
+                <i class="fa-solid fa-bookmark mr-1.5 text-indigo-500"></i>
+                <span>Save to My Notes</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Saved Notes Sidebar -->
+          <div class="lg:col-span-5 space-y-4">
+            <div class="flex items-center justify-between px-2">
+              <h4 class="text-xs font-bold uppercase tracking-wider text-zinc-400">My Saved Notes</h4>
+              <span id="saved-notes-count" class="badge-neutral text-[10px]">0 Notes</span>
+            </div>
+            <div id="saved-notes-list" class="space-y-3"></div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- SUB-PANEL 5: CHEATSHEET VAULT -->
+      <div id="studypanel-cheatsheets" class="study-panel hidden space-y-6">
+        <div class="flex items-center justify-between">
+          <div>
+            <h3 class="text-xl font-bold text-white">Quick Reference Cheatsheets</h3>
+            <p class="text-xs text-zinc-400 mt-1">Printable and copyable reference guides you can keep on your desktop.</p>
+          </div>
+        </div>
+        <div id="cheatsheets-container" class="grid grid-cols-1 md:grid-cols-3 gap-6"></div>
+      </div>
+
+      <!-- SUB-PANEL 6: INTERACTIVE KNOWLEDGE QUIZ -->
+      <div id="studypanel-quiz" class="study-panel hidden space-y-6">
+        <div class="card-surface p-8 sm:p-10 border border-white/[0.08] max-w-2xl mx-auto space-y-6">
+          <div class="flex items-center justify-between border-b border-white/[0.08] pb-4">
+            <div>
+              <span class="badge-brand font-mono text-[10px]">Knowledge Check</span>
+              <h3 class="text-xl font-bold text-white mt-1">Test Your Concept Retention</h3>
+            </div>
+            <span id="quiz-score-badge" class="badge-neutral font-mono text-xs">Score: 0 / 3</span>
+          </div>
+
+          <div id="quiz-container" class="space-y-6">
+            <!-- Dynamically populated quiz questions -->
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ======================================================== -->
+    <!-- VIEW: VIDEO CLASSROOM (Visual Masterclasses) -->
+    <!-- ======================================================== -->
+    <section id="tab-video-classroom" class="tab-panel hidden space-y-10 max-w-6xl mx-auto">
+      
+      <!-- Apple TV-Style Masterclass Header -->
+      <div class="card-surface p-8 sm:p-12 border border-white/[0.08]">
+        <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-6">
+          <div class="space-y-3 max-w-2xl">
+            <div class="flex items-center gap-2">
+              <span class="badge-brand font-mono text-[11px]">Visual Masterclasses</span>
+              <span class="text-xs text-zinc-400 font-mono">Curated Micro-Lessons</span>
+            </div>
+            <h2 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight">
+              Watch & build. <br class="hidden sm:inline" />
+              <span class="text-gradient-accent">Visual learning for all.</span>
+            </h2>
+            <p class="text-sm sm:text-base text-zinc-300 leading-relaxed pt-1">
+              Watch high-yield visual walkthroughs on how computers read instructions, how APIs speak, and how real products get built. Every video connects to an interactive project in your studio.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Video Player & Playlist Layout -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        
+        <!-- Active Video Stage -->
+        <div class="lg:col-span-8 space-y-6">
+          <div class="card-surface overflow-hidden border border-white/[0.1] rounded-3xl bg-black shadow-2xl">
+            <!-- 16:9 Aspect Video Embed Container -->
+            <div class="relative w-full" style="padding-top: 56.25%;">
+              <iframe id="classroom-video-player" class="absolute top-0 left-0 w-full h-full border-0 rounded-3xl" src="https://www.youtube.com/embed/zOjov-2OZ0E" title="Video lesson" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+            </div>
+          </div>
+
+          <!-- Video Details and Direct Build Call to Action -->
+          <div id="active-video-details" class="card-surface p-8 border border-white/[0.08] space-y-6">
+            <!-- Dynamically populated active video info -->
+          </div>
+        </div>
+
+        <!-- Right Playlist -->
+        <div class="lg:col-span-4 space-y-4">
+          <div class="flex items-center justify-between px-2">
+            <h3 class="text-xs font-bold uppercase tracking-wider text-zinc-400">Classroom Modules</h3>
+            <span id="video-count-badge" class="badge-neutral text-[10px]">6 Lessons</span>
+          </div>
+
+          <div id="video-playlist-container" class="space-y-3">
+            <!-- Dynamically rendered playlist items -->
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- ======================================================== -->
+    <!-- VIEW 2: CURRICULUM ROADMAPS (Apple Keynote Catalog) -->
+    <!-- ======================================================== -->
+    <section id="tab-roadmaps" class="tab-panel hidden space-y-8 max-w-6xl mx-auto">
+      <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-white/[0.08] pb-6">
+        <div>
+          <span class="badge-brand mb-2">Curriculum Pathways</span>
+          <h2 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">Structured Roadmaps</h2>
+          <p class="text-sm text-zinc-400 mt-1">Every career path automatically scaffolds progressive projects across 4 difficulty tiers.</p>
+        </div>
+        <div class="flex items-center gap-3">
+          <label class="text-xs text-zinc-400 font-medium">Specialization:</label>
+          <select id="roadmap-select" class="input-field text-xs py-2 px-3">
+            <option value="non-cs-beginner">Non-Tech to Software Builder (Zero Background)</option>
+            <option value="ai-engineer">AI Engineer Track</option>
+            <option value="fullstack-developer">Full-Stack Web Architect Track</option>
+            <option value="cybersecurity-analyst">Cybersecurity & Defense Track</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- 7-Level Tier Filter Strip (Pillar 5) -->
+      <div class="flex items-center gap-1.5 p-1.5 bg-white/[0.03] border border-white/[0.08] rounded-full overflow-x-auto">
+        <button class="roadmap-level-pill active px-3.5 py-1.5 rounded-full text-xs font-semibold cursor-pointer" data-level="all">All Tiers (30+ Builds)</button>
+        <button class="roadmap-level-pill px-3 py-1.5 rounded-full text-xs font-medium cursor-pointer" data-level="mini">🟢 Mini (1–3h)</button>
+        <button class="roadmap-level-pill px-3 py-1.5 rounded-full text-xs font-medium cursor-pointer" data-level="beginner">🟡 Beginner (1–3d)</button>
+        <button class="roadmap-level-pill px-3 py-1.5 rounded-full text-xs font-medium cursor-pointer" data-level="intermediate">🟠 Intermediate (1–2w)</button>
+        <button class="roadmap-level-pill px-3 py-1.5 rounded-full text-xs font-medium cursor-pointer" data-level="advanced">🔴 Advanced (2–6w)</button>
+        <button class="roadmap-level-pill px-3 py-1.5 rounded-full text-xs font-medium cursor-pointer" data-level="realworld">🚀 Real-World (1–3mo)</button>
+        <button class="roadmap-level-pill px-3 py-1.5 rounded-full text-xs font-medium cursor-pointer" data-level="industry">🏢 Industry Simulation</button>
+        <button class="roadmap-level-pill px-3 py-1.5 rounded-full text-xs font-medium cursor-pointer" data-level="startup">💡 Startup Project</button>
+      </div>
+
+      <!-- Roadmap Dynamic Cards Container -->
+      <div id="roadmap-container"></div>
+    </section>
+
+    <!-- ======================================================== -->
+    <!-- VIEW 3: IDE & WORKSPACE (Pillars 6-10) -->
+    <!-- ======================================================== -->
+    <section id="tab-workspace" class="tab-panel hidden space-y-6 max-w-7xl mx-auto">
+      
+      <!-- Studio Top Control Bar (Apple Pro Studio Bar) -->
+      <div class="card-surface p-6 sm:p-7 flex flex-wrap items-center justify-between gap-6">
+        <div class="flex items-center gap-4">
+          <div class="w-12 h-12 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400 text-lg shadow-inner">
+            <i class="fa-solid fa-code"></i>
+          </div>
+          <div>
+            <div class="flex items-center gap-3">
+              <h2 id="ws-project-title" class="text-xl sm:text-2xl font-extrabold text-white tracking-tight">AI Study Assistant</h2>
+              <span id="ws-project-level" class="badge-neutral text-xs font-mono">Intermediate</span>
+            </div>
+            <div id="ws-project-skills" class="flex flex-wrap gap-1.5 mt-1.5"></div>
+          </div>
+        </div>
+
+        <!-- Studio Mode & Run Controls -->
+        <div class="flex flex-wrap items-center gap-3">
+          <div class="flex items-center gap-2 bg-white/[0.04] border border-white/[0.08] rounded-full px-3.5 py-1.5">
+            <span class="text-xs text-zinc-400 font-medium">Mode:</span>
+            <select id="build-mode-selector" class="bg-transparent text-xs text-indigo-300 font-semibold outline-none cursor-pointer">
+              <option value="beginner">Guided Beginner</option>
+              <option value="assisted">Assisted Starter</option>
+              <option value="developer" selected>Developer (Full IDE)</option>
+              <option value="advanced">Advanced Architecture</option>
+            </select>
+          </div>
+
+          <div class="flex items-center gap-2.5 bg-white/[0.04] border border-white/[0.08] px-3.5 py-1.5 rounded-full">
+            <span class="text-xs text-zinc-400 font-medium">Milestones:</span>
+            <div class="w-20 progress-bar-bg h-2">
+              <div id="overall-progress-bar" class="progress-bar-fill h-full" style="width: 72%"></div>
+            </div>
+            <span id="overall-progress-text" class="text-xs font-mono text-indigo-300 font-bold">72%</span>
+          </div>
+
+          <button id="run-code-btn" class="btn-primary">
+            <i class="fa-solid fa-play text-xs"></i>
+            <span>Run Python</span>
+          </button>
+          <button id="run-tests-btn" class="btn-secondary">
+            <i class="fa-solid fa-flask text-xs text-indigo-400"></i>
+            <span>Execute Tests</span>
+          </button>
+          <button id="export-code-btn" class="btn-secondary">
+            <i class="fa-solid fa-download text-xs text-emerald-400"></i>
+            <span>Export Code</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Beginner Quick Presets Bar (Pill Strip) -->
+      <div class="card-surface px-6 py-3.5 flex flex-wrap items-center justify-between gap-4 border border-white/[0.08]">
+        <div class="flex items-center gap-2 text-xs">
+          <span class="w-6 h-6 rounded-full bg-amber-400/10 border border-amber-400/20 flex items-center justify-center text-amber-300 text-[11px]">
+            <i class="fa-solid fa-wand-magic-sparkles"></i>
+          </span>
+          <span class="font-bold text-white uppercase text-[11px] tracking-wider">Beginner 1-Click Starter Presets:</span>
+          <span class="text-zinc-400 hidden sm:inline text-xs">— Load into editor and hit Run</span>
+        </div>
+        <div class="flex flex-wrap items-center gap-2">
+          <button class="code-preset-btn" data-preset="preset-greeter">👋 1. Welcome Greeter</button>
+          <button class="code-preset-btn" data-preset="preset-grade">🧮 2. Grade Calculator</button>
+          <button class="code-preset-btn" data-preset="preset-pizza">🍕 3. Pizza Splitter</button>
+          <button class="code-preset-btn" data-preset="preset-ai-sim">🤖 4. Mini AI Flashcards</button>
+        </div>
+      </div>
+
+      <!-- Studio 3-Column Layout -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 min-h-[760px]">
+        
+        <!-- Left Column: File Explorer & 7-Phase Tasks (3 Cols) -->
+        <div class="lg:col-span-3 flex flex-col gap-6">
+          <div class="card-surface p-5 flex flex-col h-52">
+            <div class="flex items-center justify-between pb-3 border-b border-white/[0.06] mb-3">
+              <span class="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-2">
+                <i class="fa-solid fa-folder-open text-zinc-400 text-xs"></i>Workspace Files
+              </span>
+              <span class="text-[10px] font-mono text-zinc-500">root</span>
+            </div>
+            <div id="file-tree-items" class="space-y-1 overflow-y-auto flex-1 pr-1"></div>
+          </div>
+
+          <!-- 7-Phase Task Breakdown (Pillar 7) -->
+          <div class="card-surface p-5 flex flex-col flex-1 overflow-hidden">
+            <div class="flex items-center justify-between pb-3 border-b border-white/[0.06] mb-3">
+              <span class="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-2">
+                <i class="fa-solid fa-list-check text-indigo-400 text-xs"></i>Phase Milestones
+              </span>
+              <span id="ws-dashboard-progress-pill" class="badge-neutral font-mono text-xs font-bold text-indigo-400">72%</span>
+            </div>
+            <div id="task-checklist-container" class="space-y-3 overflow-y-auto flex-1 pr-1"></div>
+          </div>
+        </div>
+
+        <!-- Center Column: Code Editor & Terminal (5 Cols) -->
+        <div class="lg:col-span-5 flex flex-col gap-6">
+          
+          <!-- Visual Flow Builder for Beginner Mode (Pillar 10) -->
+          <div id="ws-visual-builder-container" class="card-surface p-5 border border-indigo-500/30 rounded-2xl hidden space-y-4 bg-gradient-to-br from-[#0c0f1e] to-[#070912]">
+            <div class="flex items-center justify-between border-b border-white/[0.08] pb-3">
+              <div class="flex items-center gap-2">
+                <span class="w-2.5 h-2.5 rounded-full bg-indigo-400 animate-pulse"></span>
+                <h4 class="text-xs font-bold text-white uppercase tracking-wider">No-Code / Visual Flow Blocks</h4>
+                <span class="badge-brand text-[10px]">Beginner Mode</span>
+              </div>
+              <button id="btn-compile-visual-blocks" class="btn-primary text-xs py-1.5 px-3">
+                <i class="fa-solid fa-wand-magic-sparkles mr-1"></i>Compile to Code →
+              </button>
+            </div>
+            <p class="text-xs text-zinc-300">Assemble visual components. Click any block to configure its logic:</p>
+            <div id="visual-blocks-canvas" class="grid grid-cols-1 sm:grid-cols-2 gap-2.5"></div>
+          </div>
+
+          <!-- Editor Container -->
+          <div class="editor-container flex flex-col flex-1 overflow-hidden min-h-[440px]">
+            <div class="bg-black/60 border-b border-white/[0.08] px-4 py-3 flex items-center justify-between backdrop-blur-md">
+              <div class="flex items-center gap-2.5">
+                <i class="fa-regular fa-file-code text-indigo-400 text-xs"></i>
+                <span id="active-file-name" class="text-xs font-mono font-semibold text-zinc-200">main.py</span>
+              </div>
+              <span class="text-[11px] text-zinc-400 font-mono">Python 3.11 • WASM Local</span>
+            </div>
+            <div class="flex-1 flex overflow-hidden p-3 bg-[#06080e]">
+              <div id="line-numbers" class="editor-line-numbers select-none font-mono text-xs text-zinc-600 pr-3 text-right"></div>
+              <textarea id="code-editor" class="editor-textarea h-full font-mono text-xs text-zinc-200 bg-transparent outline-none resize-none flex-1 leading-relaxed" spellcheck="false"></textarea>
+            </div>
+          </div>
+
+          <!-- Interactive Terminal Shell (Pillar 9) -->
+          <div class="terminal-container h-64 flex flex-col overflow-hidden">
+            <div class="bg-black/50 border-b border-white/[0.06] px-4 py-2.5 flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <span class="w-3 h-3 rounded-full bg-rose-500/80 inline-block"></span>
+                <span class="w-3 h-3 rounded-full bg-amber-500/80 inline-block"></span>
+                <span class="w-3 h-3 rounded-full bg-emerald-500/80 inline-block"></span>
+                <span class="text-xs font-mono text-zinc-400 ml-2">sh — careerverse-sandbox</span>
+              </div>
+              <span class="text-[10px] font-mono text-zinc-500">PTY 80x24</span>
+            </div>
+            <div id="terminal-logs" class="flex-1 p-4 overflow-y-auto font-mono text-xs text-zinc-300 space-y-1 bg-[#05060b]"></div>
+            <div class="bg-[#0a0d15] border-t border-white/[0.06] px-4 py-2 flex items-center gap-2">
+              <span class="text-indigo-400 font-mono text-xs font-bold">$</span>
+              <input id="terminal-input" type="text" placeholder="Type run, test, pip list, deploy, clear..." class="bg-transparent text-xs font-mono text-white outline-none w-full placeholder-zinc-600">
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Column: Sub-Panels & AI Code Mentor (4 Cols) -->
+        <div class="lg:col-span-4 flex flex-col gap-6">
+          
+          <div class="card-surface flex flex-col flex-1 overflow-hidden min-h-[380px]">
+            <!-- Sub-Panel Tabs -->
+            <div class="flex items-center border-b border-white/[0.08] bg-black/40 px-3 py-2 gap-1 overflow-x-auto">
+              <button class="ws-tab-btn tab-active px-2.5 py-1.5 text-xs font-semibold text-zinc-300 hover:text-white rounded-lg transition-colors whitespace-nowrap" data-wstab="preview">
+                <i class="fa-solid fa-window-maximize text-zinc-400 mr-1 text-xs"></i>Preview
+              </button>
+              <button class="ws-tab-btn px-2.5 py-1.5 text-xs font-semibold text-zinc-300 hover:text-white rounded-lg transition-colors whitespace-nowrap" data-wstab="database">
+                <i class="fa-solid fa-database text-zinc-400 mr-1 text-xs"></i>Schema
+              </button>
+              <button class="ws-tab-btn px-2.5 py-1.5 text-xs font-semibold text-zinc-300 hover:text-white rounded-lg transition-colors whitespace-nowrap" data-wstab="api-tester">
+                <i class="fa-solid fa-network-wired text-zinc-400 mr-1 text-xs"></i>HTTP
+              </button>
+              <button class="ws-tab-btn px-2.5 py-1.5 text-xs font-semibold text-zinc-300 hover:text-white rounded-lg transition-colors whitespace-nowrap" data-wstab="review">
+                <i class="fa-solid fa-shield-halved text-zinc-400 mr-1 text-xs"></i>Review
+              </button>
+              <button class="ws-tab-btn px-2.5 py-1.5 text-xs font-semibold text-zinc-300 hover:text-white rounded-lg transition-colors whitespace-nowrap" data-wstab="collaboration">
+                <i class="fa-solid fa-users text-zinc-400 mr-1 text-xs"></i>Team
+              </button>
+              <button class="ws-tab-btn px-2.5 py-1.5 text-xs font-semibold text-zinc-300 hover:text-white rounded-lg transition-colors whitespace-nowrap" data-wstab="github">
+                <i class="fa-brands fa-github text-zinc-400 mr-1 text-xs"></i>GitHub
+              </button>
+              <button class="ws-tab-btn px-2.5 py-1.5 text-xs font-semibold text-zinc-300 hover:text-white rounded-lg transition-colors whitespace-nowrap" data-wstab="portfolio">
+                <i class="fa-solid fa-briefcase text-zinc-400 mr-1 text-xs"></i>Portfolio
+              </button>
+            </div>
+
+            <!-- Tab Panel: Live Client Simulation -->
+            <div id="wspanel-preview" class="ws-panel flex-1 p-4 overflow-hidden flex flex-col">
+              <div id="live-preview-viewport" class="flex-1 rounded-2xl bg-black/50 border border-white/[0.06] p-4 flex flex-col items-center justify-center text-center">
+                <div class="w-12 h-12 rounded-2xl bg-zinc-800 border border-zinc-700 flex items-center justify-center text-zinc-400 mb-3 shadow-inner">
+                  <i class="fa-solid fa-play text-sm"></i>
+                </div>
+                <h4 class="text-sm font-bold text-white">Interactive Runtime Ready</h4>
+                <p class="text-xs text-zinc-400 max-w-xs mt-1 leading-relaxed">Execute the python script to mount the frontend view.</p>
+              </div>
+            </div>
+
+            <!-- Tab Panel: Database Schema -->
+            <div id="wspanel-database" class="ws-panel hidden flex-1 p-4 overflow-y-auto text-xs font-mono space-y-3">
+              <div class="flex items-center justify-between border-b border-white/[0.06] pb-2">
+                <span class="text-zinc-200 font-semibold text-xs">Schema: study_notes (SQLite)</span>
+                <span class="badge-success text-[10px]">Connected</span>
+              </div>
+              <table class="w-full text-left border-collapse">
+                <thead>
+                  <tr class="border-b border-white/[0.06] text-zinc-400 text-[10px]">
+                    <th class="py-1">ID</th>
+                    <th class="py-1">Subject</th>
+                    <th class="py-1">Topic</th>
+                    <th class="py-1">Created</th>
+                  </tr>
+                </thead>
+                <tbody class="text-zinc-300 text-xs divide-y divide-zinc-800/60">
+                  <tr><td class="py-1.5">1</td><td>CS</td><td>Attention Mechanism</td><td>2026-10-05</td></tr>
+                  <tr><td class="py-1.5">2</td><td>AI</td><td>RAG Chunking</td><td>2026-10-05</td></tr>
+                  <tr><td class="py-1.5">3</td><td>Systems</td><td>Distributed Locks</td><td>2026-10-05</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Tab Panel: API Tester -->
+            <div id="wspanel-api-tester" class="ws-panel hidden flex-1 p-4 overflow-y-auto space-y-4">
+              <div class="flex items-center gap-2">
+                <span class="px-2.5 py-1 bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 font-semibold text-xs rounded-full font-mono">POST</span>
+                <input type="text" value="/api/v1/summarize" readonly class="flex-1 input-field font-mono text-xs py-1.5">
+                <button class="btn-primary py-1.5 px-4 text-xs" onclick="alert('POST /api/v1/summarize 200 OK — Latency: 6ms')">Dispatch</button>
+              </div>
+              <div>
+                <span class="text-[10px] text-zinc-400 uppercase font-bold tracking-wider block mb-1.5">Payload (JSON)</span>
+                <pre class="p-3 rounded-2xl bg-black/60 border border-white/[0.06] text-xs font-mono text-indigo-300">{"text": "Self-attention evaluates tokens concurrently.", "max_points": 2}</pre>
+              </div>
+            </div>
+
+            <!-- Tab Panel: AI Project Review (Pillar 18) -->
+            <div id="wspanel-review" class="ws-panel hidden flex-1 p-4 overflow-y-auto space-y-4">
+              <div class="text-center py-2 space-y-2">
+                <h4 class="text-sm font-bold text-white">Automated Static Analysis</h4>
+                <p class="text-xs text-zinc-400">Scored across Code Quality, Product Design, Engineering, and Portfolio Presentation.</p>
+                <div class="flex justify-center gap-2 pt-2">
+                  <button id="run-review-btn" class="btn-primary py-2 text-xs">
+                    Run Analysis
+                  </button>
+                  <button id="export-case-study-btn" class="btn-secondary py-2 text-xs">
+                    Export Case Study (.md)
+                  </button>
+                </div>
+              </div>
+              <div id="review-result-panel"></div>
+            </div>
+
+            <!-- Tab Panel: Team Collaboration & Kanban Board (Pillar 22) -->
+            <div id="wspanel-collaboration" class="ws-panel hidden flex-1 p-4 overflow-y-auto space-y-4">
+              <div class="flex items-center justify-between border-b border-white/[0.08] pb-3">
+                <div>
+                  <h4 class="text-xs font-bold text-white uppercase tracking-wider">Project Team (4 Members)</h4>
+                  <p class="text-[11px] text-zinc-400">Roles: AI Engineer, Frontend, Product, QA</p>
+                </div>
+                <button id="btn-invite-team" class="btn-secondary text-[11px] py-1 px-3">
+                  <i class="fa-solid fa-user-plus mr-1"></i>Invite
+                </button>
+              </div>
+
+              <!-- Teammate Roster -->
+              <div id="team-roster-list" class="grid grid-cols-2 gap-2"></div>
+
+              <!-- Kanban Milestone Board -->
+              <div class="space-y-2 pt-1">
+                <div class="flex items-center justify-between">
+                  <span class="text-[10px] text-zinc-400 uppercase font-bold tracking-wider">Kanban Milestone Board</span>
+                  <span class="text-[10px] font-mono text-indigo-400 font-bold">6 Total Tasks</span>
+                </div>
+                <div class="grid grid-cols-3 gap-2" id="kanban-board-cols">
+                  <div class="bg-black/40 p-2.5 rounded-xl border border-white/[0.06] space-y-2">
+                    <div class="text-[10px] font-bold text-zinc-400 uppercase flex items-center justify-between">
+                      <span>To Do</span>
+                      <span id="kanban-todo-count" class="badge-neutral text-[9px]">2</span>
+                    </div>
+                    <div id="kanban-col-todo" class="space-y-1.5"></div>
+                  </div>
+
+                  <div class="bg-black/40 p-2.5 rounded-xl border border-white/[0.06] space-y-2">
+                    <div class="text-[10px] font-bold text-indigo-300 uppercase flex items-center justify-between">
+                      <span>In Progress</span>
+                      <span id="kanban-prog-count" class="badge-brand text-[9px]">2</span>
+                    </div>
+                    <div id="kanban-col-prog" class="space-y-1.5"></div>
+                  </div>
+
+                  <div class="bg-black/40 p-2.5 rounded-xl border border-white/[0.06] space-y-2">
+                    <div class="text-[10px] font-bold text-emerald-300 uppercase flex items-center justify-between">
+                      <span>Done</span>
+                      <span id="kanban-done-count" class="badge-neutral text-[9px] text-emerald-400">2</span>
+                    </div>
+                    <div id="kanban-col-done" class="space-y-1.5"></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Team Chat / Activity Stream -->
+              <div class="space-y-2 pt-2 border-t border-white/[0.06]">
+                <span class="text-[10px] text-zinc-400 uppercase font-bold tracking-wider block">Team Activity Stream</span>
+                <div id="team-chat-logs" class="space-y-2 max-h-36 overflow-y-auto pr-1"></div>
+                <div class="flex gap-2 pt-1">
+                  <input id="team-chat-input" type="text" placeholder="Share blocker or update..." class="input-field text-xs flex-1 py-1.5" />
+                  <button id="btn-send-team-chat" class="btn-primary text-xs py-1.5 px-3">Post</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Tab Panel: GitHub Integration (Pillar 17) -->
+            <div id="wspanel-github" class="ws-panel hidden flex-1 p-4 overflow-y-auto space-y-4">
+              <div class="p-3.5 bg-black/40 rounded-xl border border-white/[0.08] flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                  <div class="w-8 h-8 rounded-lg bg-zinc-800 flex items-center justify-center text-white text-base">
+                    <i class="fa-brands fa-github"></i>
+                  </div>
+                  <div>
+                    <h5 class="text-xs font-bold text-white font-mono">alex-builds/ai-study-assistant</h5>
+                    <span class="text-[10px] text-emerald-400 font-mono">● Sync Active (main)</span>
+                  </div>
+                </div>
+                <div class="flex items-center gap-2">
+                  <span class="badge-neutral text-[10px] font-mono"><i class="fa-regular fa-star mr-1 text-amber-300"></i>42</span>
+                  <span class="badge-neutral text-[10px] font-mono"><i class="fa-solid fa-code-fork mr-1 text-zinc-400"></i>14</span>
+                </div>
+              </div>
+
+              <!-- README Quality Auditor -->
+              <div class="p-3.5 bg-indigo-950/30 rounded-xl border border-indigo-500/20 space-y-2">
+                <div class="flex items-center justify-between">
+                  <span class="text-[10px] font-bold text-indigo-300 uppercase tracking-wider">README Quality Auditor</span>
+                  <span class="badge-brand font-mono text-[10px] font-bold">Score: 94 / 100</span>
+                </div>
+                <ul class="text-[11px] text-zinc-300 space-y-1 font-mono">
+                  <li class="text-emerald-300">✓ Problem, target users & architecture stated</li>
+                  <li class="text-emerald-300">✓ Automated test suite badge (100% pass)</li>
+                  <li class="text-emerald-300">✓ One-command Docker run instructions</li>
+                  <li class="text-amber-300">○ Recommended: Add short animated GIF demo</li>
+                </ul>
+              </div>
+
+              <!-- Git Commits Stream -->
+              <div class="space-y-2">
+                <div class="flex items-center justify-between">
+                  <span class="text-[10px] text-zinc-400 uppercase font-bold tracking-wider">Commit Stream</span>
+                  <button id="btn-sync-github" class="btn-secondary text-[10px] py-0.5 px-2.5 cursor-pointer">
+                    <i class="fa-solid fa-arrows-rotate mr-1"></i>Sync Now
+                  </button>
+                </div>
+                <div id="github-commits-list" class="space-y-1.5 font-mono text-[11px]"></div>
+              </div>
+            </div>
+
+            <!-- Tab Panel: Add to Portfolio & ProjectVerse (Pillars 16 & 23) -->
+            <div id="wspanel-portfolio" class="ws-panel hidden flex-1 p-4 overflow-y-auto space-y-4">
+              <div class="text-center space-y-2 border-b border-white/[0.08] pb-3">
+                <div class="w-10 h-10 rounded-2xl bg-indigo-600/20 border border-indigo-500/30 flex items-center justify-center text-indigo-400 mx-auto text-base">
+                  <i class="fa-solid fa-briefcase"></i>
+                </div>
+                <h4 class="text-sm font-bold text-white">Verified Recruiter Portfolio Artifact</h4>
+                <p class="text-xs text-zinc-400">Auto-generated proof of engineering capability grounded in working code.</p>
+              </div>
+
+              <div id="portfolio-live-card" class="p-4 bg-[#080a10] rounded-2xl border border-white/[0.08] space-y-3">
+                <!-- Dynamically populated portfolio card preview -->
+              </div>
+
+              <div class="flex gap-2">
+                <button id="btn-publish-projectverse" class="btn-primary flex-1 text-xs py-2 justify-center">
+                  <i class="fa-solid fa-globe mr-1.5"></i>Publish to ProjectVerse
+                </button>
+                <button id="btn-export-portfolio-md" class="btn-secondary text-xs py-2 px-3">
+                  <i class="fa-solid fa-download mr-1"></i>Markdown
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- AI Code Mentor (Pillar 8) -->
+          <div class="card-surface flex flex-col h-80 overflow-hidden">
+            <div class="bg-black/40 border-b border-white/[0.08] px-4 py-2.5 flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-indigo-400 animate-pulse"></span>
+                <span class="text-xs font-bold text-white">AI Code Mentor</span>
+              </div>
+              <div class="flex items-center gap-1">
+                <button class="mentor-mode-btn px-2.5 py-1 text-[11px] rounded-full font-medium transition-colors" data-mode="explain">Explain</button>
+                <button class="mentor-mode-btn tab-active px-2.5 py-1 text-[11px] rounded-full font-semibold bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 transition-colors" data-mode="hint">Hint</button>
+                <button class="mentor-mode-btn px-2.5 py-1 text-[11px] rounded-full font-medium transition-colors" data-mode="guide">Guide</button>
+                <button class="mentor-mode-btn px-2.5 py-1 text-[11px] rounded-full font-medium transition-colors" data-mode="solution">Solution</button>
+              </div>
+            </div>
+
+            <!-- Mentor Chat Log -->
+            <div id="mentor-chat-logs" class="flex-1 p-4 overflow-y-auto space-y-3">
+              <div class="flex items-start gap-2.5 max-w-[90%]">
+                <div class="w-6 h-6 rounded-full bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400 text-xs flex-shrink-0 mt-0.5">
+                  <i class="fa-solid fa-code"></i>
+                </div>
+                <div class="card-surface-elevated p-3 rounded-2xl text-xs text-zinc-200 leading-relaxed">
+                  Ready to assist on <strong>AI Study Assistant</strong>. Switch modes (Explain, Hint, Guide, Solution) based on how much guidance you need.
+                </div>
+              </div>
+            </div>
+
+            <!-- Mentor Input -->
+            <div class="bg-[#0a0d15] border-t border-white/[0.06] p-3 flex items-center gap-2">
+              <input id="mentor-input" type="text" placeholder="Ask about architecture, bugs, or test edge-cases..." class="flex-1 input-field py-1.5 text-xs">
+              <button id="send-mentor-btn" class="btn-primary py-1.5 px-4 text-xs">
+                Send
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- ======================================================== -->
+    <!-- VIEW 4: PROJECT GENERATOR & BLUEPRINTS (Pillars 3, 12, 13) -->
+    <!-- ======================================================== -->
+    <section id="tab-generator" class="tab-panel hidden space-y-12 max-w-6xl mx-auto">
+      
+      <!-- Apple Keynote Header & Automated Project Generator (Pillar 3) -->
+      <div class="card-surface p-8 sm:p-12 border border-white/[0.08] relative overflow-hidden">
+        <div class="space-y-4 max-w-2xl mb-8">
+          <div class="flex items-center gap-2">
+            <span class="badge-brand font-mono text-[11px]">Pillar 3 • Instant Architecture</span>
+            <span class="text-xs text-zinc-400 font-mono">Full Spec Generation</span>
+          </div>
+          <h2 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight">
+            Design your architecture. <br class="hidden sm:inline" />
+            <span class="text-gradient-accent">Instant project blueprints.</span>
+          </h2>
+          <p class="text-sm sm:text-base text-zinc-300 leading-relaxed pt-1">
+            Specify your desired skill, difficulty tier, target career role, and domain interest. CareerVerse compiles a full engineering specification, database design, API contracts, and starter code.
+          </p>
+        </div>
+
+        <form id="project-generator-form" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-6">
+          <div>
+            <label class="block text-xs font-bold text-zinc-400 uppercase tracking-wider mb-2">Core Skill</label>
+            <select id="gen-skill" class="input-field w-full text-xs">
+              <option value="Python">Python</option>
+              <option value="FastAPI">FastAPI</option>
+              <option value="LLMs & RAG">LLMs & RAG</option>
+              <option value="React">React</option>
+              <option value="Docker">Docker</option>
+              <option value="PostgreSQL">PostgreSQL</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-zinc-400 uppercase tracking-wider mb-2">Difficulty Tier</label>
+            <select id="gen-diff" class="input-field w-full text-xs">
+              <option value="Beginner">Level 1: Beginner</option>
+              <option value="Intermediate" selected>Level 2: Intermediate</option>
+              <option value="Advanced">Level 3: Advanced</option>
+              <option value="Real World">Level 4: Real World</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-zinc-400 uppercase tracking-wider mb-2">Target Career</label>
+            <select id="gen-career" class="input-field w-full text-xs">
+              <option value="AI Engineer">AI Engineer</option>
+              <option value="Backend Engineer">Backend Engineer</option>
+              <option value="Full-Stack Developer">Full-Stack Developer</option>
+              <option value="Cybersecurity Analyst">Cybersecurity Analyst</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-zinc-400 uppercase tracking-wider mb-2">Domain Context</label>
+            <select id="gen-interest" class="input-field w-full text-xs">
+              <option value="Education">Education & EdTech</option>
+              <option value="Healthcare">Healthcare & Biotech</option>
+              <option value="Finance">Personal Finance & Fintech</option>
+              <option value="Climate">Climate & Sustainability</option>
+              <option value="Gaming">Gaming & Interactive Media</option>
+            </select>
+          </div>
+
+          <div class="sm:col-span-2 lg:col-span-4 pt-2">
+            <button type="submit" class="btn-primary w-full justify-center py-3 text-sm">
+              <i class="fa-solid fa-bolt text-xs"></i>
+              <span>Compile Specification & Scaffolding</span>
+            </button>
+          </div>
+        </form>
+
+        <div id="generator-output"></div>
+      </div>
+
+      <!-- Real Problems Incubator (Pillar 13) -->
+      <div class="space-y-6">
+        <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+          <div>
+            <span class="badge-brand mb-2">Pillar 13</span>
+            <h3 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">Real-World Problem Incubator</h3>
+            <p class="text-sm text-zinc-400 mt-1">Don't build toy projects. Solve actual operational friction points faced by real organizations.</p>
+          </div>
+        </div>
+        <div id="problems-grid" class="grid grid-cols-1 md:grid-cols-3 gap-6"></div>
+      </div>
+
+      <!-- Domain Templates (Pillar 12) -->
+      <div class="space-y-6">
+        <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+          <div>
+            <span class="badge-neutral mb-2">Pillar 12</span>
+            <h3 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">Production Reference Templates</h3>
+            <p class="text-sm text-zinc-400 mt-1">Verified architectural foundations across Web, Mobile, AI, Cybersecurity, Data, Robotics, IoT, and Games.</p>
+          </div>
+        </div>
+        <div id="templates-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5"></div>
+      </div>
+
+    </section>
+
+    <!-- ======================================================== -->
+    <!-- VIEW 5: INCIDENT LAB, STARTUP & CAREER (Pillars 19, 20, 21, 24, 25, 28) -->
+    <!-- ======================================================== -->
+    <section id="tab-industry" class="tab-panel hidden space-y-12 max-w-6xl mx-auto">
+      
+      <!-- Apple Keynote Header & Incident Command Center (Pillar 19) -->
+      <div class="space-y-6">
+        <div class="card-surface p-8 sm:p-12 border border-white/[0.08]">
+          <div class="space-y-4 max-w-2xl">
+            <div class="flex items-center gap-2">
+              <span class="badge-neutral font-mono text-[11px] text-rose-400 border-rose-800/40 bg-rose-950/30">Pillar 19 • On-Call Sim</span>
+              <span class="text-xs text-zinc-400 font-mono">SEV-0 Incident Drills</span>
+            </div>
+            <h2 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight">
+              Production Incident Lab. <br class="hidden sm:inline" />
+              <span class="text-gradient-accent">Real stakes, real telemetry.</span>
+            </h2>
+            <p class="text-sm sm:text-base text-zinc-300 leading-relaxed pt-1">
+              Step into simulated on-call rotations to investigate live regressions, parse real server telemetry logs, and deploy mitigation hotfixes.
+            </p>
+          </div>
+        </div>
+        <div id="industry-container"></div>
+      </div>
+
+      <!-- 48-Hour Sprint Simulator (Pillar 20) -->
+      <div id="hackathon-container"></div>
+
+      <!-- Job Matching Engine (Pillars 24 & 25) -->
+      <div class="space-y-6">
+        <div>
+          <span class="badge-brand mb-2">Pillars 24 & 25</span>
+          <h3 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">Project-to-Job Matching</h3>
+          <p class="text-sm text-zinc-400 mt-1">Verified code artifacts automatically match with open positions and compensation bands ($110k–$180k).</p>
+        </div>
+        <div id="jobs-container" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
+      </div>
+
+      <!-- Startup Mode & TAM Calculator (Pillar 21) -->
+      <div class="card-surface p-8 sm:p-10 space-y-6">
+        <div class="flex items-center gap-4">
+          <div class="w-12 h-12 rounded-2xl bg-zinc-800 border border-zinc-700 flex items-center justify-center text-white text-lg shadow-inner">
+            <i class="fa-solid fa-chart-line"></i>
+          </div>
+          <div>
+            <h3 class="text-xl font-bold text-white">Startup Mode: Turn Project into a Product (Pillar 21)</h3>
+            <p class="text-sm text-zinc-400">Model economics: Addressable Market (TAM), conversion funnels, and projected SaaS recurring revenue.</p>
+          </div>
+        </div>
+
+        <div class="p-6 bg-black/40 rounded-3xl border border-white/[0.08] space-y-6">
+          <h4 class="text-xs font-bold text-zinc-300 uppercase tracking-wider">Interactive TAM & Monetization Sizer</h4>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="space-y-2">
+              <div class="flex justify-between text-xs text-zinc-300">
+                <span>Target Audience (TAM):</span>
+                <span id="calc-aud-val" class="font-mono text-indigo-400 font-bold">50,000</span>
+              </div>
+              <input id="calc-audience" type="range" min="1000" max="500000" step="5000" value="50000" class="w-full accent-indigo-500 cursor-pointer">
+            </div>
+
+            <div class="space-y-2">
+              <div class="flex justify-between text-xs text-zinc-300">
+                <span>Conversion Rate:</span>
+                <span id="calc-conv-val" class="font-mono text-indigo-400 font-bold">2.5%</span>
+              </div>
+              <input id="calc-conv" type="range" min="0.5" max="10" step="0.5" value="2.5" class="w-full accent-indigo-500 cursor-pointer">
+            </div>
+
+            <div class="space-y-2">
+              <div class="flex justify-between text-xs text-zinc-300">
+                <span>Monthly Seat Price ($):</span>
+                <span id="calc-price-val" class="font-mono text-emerald-400 font-bold">$19/mo</span>
+              </div>
+              <input id="calc-price" type="range" min="5" max="99" step="2" value="19" class="w-full accent-emerald-500 cursor-pointer">
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-4 border-t border-white/[0.06] text-center">
+            <div class="p-6 bg-white/[0.02] rounded-2xl border border-white/[0.06]">
+              <span class="text-xs text-zinc-400 font-medium block mb-1">Projected Monthly Recurring (MRR)</span>
+              <span id="calc-mrr-result" class="text-3xl sm:text-4xl font-extrabold font-mono text-emerald-400 tracking-tight">$23,750</span>
+            </div>
+            <div class="p-6 bg-white/[0.02] rounded-2xl border border-white/[0.06]">
+              <span class="text-xs text-zinc-400 font-medium block mb-1">Projected Annual Recurring (ARR)</span>
+              <span id="calc-arr-result" class="text-3xl sm:text-4xl font-extrabold font-mono text-indigo-300 tracking-tight">$285,000</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Project Reflection Journal (Pillar 28) -->
+      <div class="card-surface p-8 sm:p-10 space-y-6">
+        <div class="flex items-center justify-between">
+          <div>
+            <span class="badge-brand mb-1">Pillar 28</span>
+            <h3 class="text-xl font-bold text-white">Project Retrospective & Learning Calibration</h3>
+            <p class="text-xs text-zinc-400 mt-1">Calibrate your learning journey and update your personalized skill fingerprint.</p>
+          </div>
+          <span id="reflection-save-status" class="text-xs text-zinc-400"></span>
+        </div>
+
+        <form id="reflection-form" class="space-y-6">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs">
+            <div class="space-y-1.5">
+              <label class="block font-bold text-zinc-300">1. What did you learn?</label>
+              <textarea id="ref-q1" class="w-full input-field resize-none h-20" placeholder="Learned vector cosine distance and FastAPI schema validation...">Learned how to extract semantic embeddings and compute cosine distances to match query context in O(n) time.</textarea>
+            </div>
+            <div class="space-y-1.5">
+              <label class="block font-bold text-zinc-300">2. What was difficult?</label>
+              <textarea id="ref-q2" class="w-full input-field resize-none h-20" placeholder="Handling empty text edge cases and rate limits...">Handling empty text inputs and guarding against division-by-zero during vector normalization.</textarea>
+            </div>
+            <div class="space-y-1.5">
+              <label class="block font-bold text-zinc-300">3. What would you improve?</label>
+              <textarea id="ref-q3" class="w-full input-field resize-none h-20" placeholder="Add redis caching to avoid repeated LLM calls...">Add Redis caching to prevent re-computing summaries for repeated textbook excerpts.</textarea>
+            </div>
+            <div class="space-y-1.5">
+              <label class="block font-bold text-zinc-300">4. What would you build next?</label>
+              <textarea id="ref-q4" class="w-full input-field resize-none h-20" placeholder="A multi-agent autonomous student researcher...">A multi-agent autonomous student researcher that syncs with canvas/blackboard LMS.</textarea>
+            </div>
+            <div class="space-y-1.5">
+              <label class="block font-bold text-zinc-300">5. Would you actually use this?</label>
+              <input id="ref-q5" type="text" class="w-full input-field" value="Yes, absolutely. Cuts syllabus review time by 80%.">
+            </div>
+            <div class="space-y-1.5">
+              <label class="block font-bold text-zinc-300">6. Did you enjoy building it?</label>
+              <input id="ref-q6" type="text" class="w-full input-field" value="Yes, solving real problems is far more rewarding than toy leetcode problems.">
+            </div>
+          </div>
+
+          <button type="submit" class="btn-primary text-xs py-2.5 px-6">
+            Save Retrospective & Update Career Model
+          </button>
+        </form>
+      </div>
+
+      <!-- Public Showcase Gallery (Pillar 23) -->
+      <div class="space-y-6">
+        <div>
+          <span class="badge-neutral mb-2">Pillar 23</span>
+          <h3 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">ProjectVerse Community Showcase</h3>
+          <p class="text-sm text-zinc-400 mt-1">Explore verified student projects with live deployments and code repositories.</p>
+        </div>
+        <div id="showcase-gallery" class="grid grid-cols-1 md:grid-cols-3 gap-6"></div>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- Floating "Ask What To Do" Assistant Trigger -->
+  <div class="fixed bottom-6 right-6 z-40">
+    <button id="floating-help-btn" class="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-500 text-white font-medium text-xs px-4 py-2.5 rounded-full shadow-lg shadow-indigo-600/30 border border-indigo-400/40 transition-all hover:scale-105 cursor-pointer">
+      <i class="fa-solid fa-sparkles text-amber-300"></i>
+      <span>Ask What To Do</span>
+      <span class="bg-indigo-800 text-[10px] px-1.5 py-0.5 rounded-full text-indigo-200">AI Guide</span>
+    </button>
+  </div>
+
+  <!-- Slide-Over Beginner Guidance Assistant (For Everyone, Zero CS Required) -->
+  <div id="beginner-guide-modal" class="fixed inset-0 z-50 hidden transition-opacity">
+    <div id="beginner-guide-backdrop" class="fixed inset-0 bg-black/70 backdrop-blur-sm cursor-pointer"></div>
+    <div class="fixed inset-y-0 right-0 max-w-xl w-full bg-[#0d101a] border-l border-white/[0.1] shadow-2xl flex flex-col z-10">
+      
+      <!-- Drawer Header -->
+      <div class="p-4 border-b border-white/[0.08] flex items-center justify-between bg-[#111422]">
+        <div class="flex items-center gap-3">
+          <div class="w-8 h-8 rounded-lg bg-indigo-600/20 border border-indigo-500/30 flex items-center justify-center text-indigo-400">
+            <i class="fa-solid fa-compass"></i>
+          </div>
+          <div>
+            <h3 class="text-sm font-bold text-white flex items-center gap-2">
+              CareerVerse Learning Companion
+              <span class="badge-brand text-[10px]">Zero Jargon</span>
+            </h3>
+            <p class="text-xs text-zinc-400">Ask anything: from "Where do I start?" to line-by-line explanations.</p>
+          </div>
+        </div>
+        <button id="close-beginner-guide" class="text-zinc-400 hover:text-white p-1 rounded-md cursor-pointer">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+
+      <!-- Quick Prompt Pills for Non-CS & Beginners -->
+      <div class="px-4 py-3 bg-[#0a0d15] border-b border-white/[0.06] overflow-x-auto flex gap-2">
+        <button class="guide-chip text-[11px] whitespace-nowrap bg-white/[0.04] hover:bg-white/[0.08] text-zinc-300 border border-white/[0.08] px-3 py-1.5 rounded-full transition-colors cursor-pointer" data-prompt="I have zero coding background. Where do I start?">
+          🌱 Zero background: Where do I start?
+        </button>
+        <button class="guide-chip text-[11px] whitespace-nowrap bg-white/[0.04] hover:bg-white/[0.08] text-zinc-300 border border-white/[0.08] px-3 py-1.5 rounded-full transition-colors cursor-pointer" data-prompt="What should I do right now?">
+          🎯 What should I do right now?
+        </button>
+        <button class="guide-chip text-[11px] whitespace-nowrap bg-white/[0.04] hover:bg-white/[0.08] text-zinc-300 border border-white/[0.08] px-3 py-1.5 rounded-full transition-colors cursor-pointer" data-prompt="Can you explain what an API is in simple words?">
+          🍕 What is an API (Simple Analogy)
+        </button>
+        <button class="guide-chip text-[11px] whitespace-nowrap bg-white/[0.04] hover:bg-white/[0.08] text-zinc-300 border border-white/[0.08] px-3 py-1.5 rounded-full transition-colors cursor-pointer" data-prompt="Which career track fits a non-CS student?">
+          💼 Which career fits non-CS?
+        </button>
+        <button class="guide-chip text-[11px] whitespace-nowrap bg-white/[0.04] hover:bg-white/[0.08] text-zinc-300 border border-white/[0.08] px-3 py-1.5 rounded-full transition-colors cursor-pointer" data-prompt="My code gave an error! What did I do wrong?">
+          🚨 My code gave an error!
+        </button>
+      </div>
+
+      <!-- Chat Messages Container -->
+      <div id="guide-chat-messages" class="flex-1 p-4 overflow-y-auto space-y-4 text-xs">
+        <!-- Initial Welcome Message from Companion -->
+        <div class="flex items-start gap-3">
+          <div class="w-7 h-7 rounded-full bg-indigo-600/30 border border-indigo-400/40 flex items-center justify-center text-indigo-300 shrink-0 mt-0.5">
+            <i class="fa-solid fa-sparkles text-xs"></i>
+          </div>
+          <div class="card-surface p-3.5 rounded-xl border border-white/[0.08] max-w-[85%] text-zinc-200 space-y-2 leading-relaxed">
+            <p class="font-medium text-white">Hi there! 👋 I am your CareerVerse Learning Guide.</p>
+            <p>Whether you study arts, business, commerce, healthcare, or are touching code for the very first time, I am here to help you build real things without intimidating technical jargon.</p>
+            <p class="text-zinc-400">Click any question above or type your question below!</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Chat Input Area -->
+      <div class="p-3 border-t border-white/[0.08] bg-[#111422]">
+        <form id="guide-chat-form" class="flex gap-2">
+          <input id="guide-chat-input" type="text" placeholder="Ask anything: 'What is a variable?', 'Why did this fail?', etc." class="flex-1 input-field text-xs px-3 py-2.5" autocomplete="off" />
+          <button type="submit" class="btn-primary text-xs px-4 cursor-pointer">
+            <i class="fa-solid fa-arrow-up"></i>
+          </button>
+        </form>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Clean Enterprise Footer -->
+  <footer class="bg-[#07080d] border-t border-white/[0.06] py-4 px-4 lg:px-8 text-xs text-zinc-500">
+    <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
+      <div class="flex items-center gap-2">
+        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+        <span>CareerVerse Studio • Standardized Engineering Architecture</span>
+      </div>
+      <div>
+        <span>Learn → Practice → Build → Deploy → Showcase → Review</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="data/projects-data.js?v=3.7"></script>
+  <script src="js/app.js?v=3.7"></script>
+</body>
+</html>
